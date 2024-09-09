@@ -3,13 +3,9 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { socketHandlers } from './sockets/socketHandler.js';
 import { setupApiRoutes } from './routers/apiRoutes.js';
-import dotenvx from '@dotenvx/dotenvx';
 import fastifyCors from '@fastify/cors';
 import fastifyIO from 'fastify-socket.io';
 import fastifyStatic from '@fastify/static';
-
-// Load environment variables
-dotenvx.config();
 
 // Create Fastify instance
 const fastify = Fastify({ logger: true });
