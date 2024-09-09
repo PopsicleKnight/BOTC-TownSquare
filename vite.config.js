@@ -31,12 +31,12 @@ export default defineConfig({
     port: port,
     proxy: {
       "/api": {
-        target: `${import.meta.env.VITE_BACKEND_URL}`,
+        target: `${import.meta.env.VITE_BACKEND_URL || '0.0.0.0'}`,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
       "/socket.io": {
-        target: `${import.meta.env.VITE_BACKEND_URL}`,
+        target: `${import.meta.env.VITE_BACKEND_URL || '0.0.0.0'}`,
         ws: true,
       },
     },
