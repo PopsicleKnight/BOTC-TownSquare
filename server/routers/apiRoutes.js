@@ -1,7 +1,7 @@
 import { rooms } from "../sockets/socketHandler.js";
 
 export function setupApiRoutes(fastify) {
-  fastify.get("/v0/game/:gameId/overview", async (req, reply) => {
+  fastify.get("/api/v0/game/:gameId/overview", async (req, reply) => {
     const { gameId } = req.params;
     if (!gameId) {
       return reply.status(400).send({ error: "Game ID is required" });
@@ -21,9 +21,5 @@ export function setupApiRoutes(fastify) {
     };
 
     return reply.send(response);
-  });
-
-  fastify.get("/", async (req, reply) => {
-    return reply.send("Hello from Fastify!");
   });
 }

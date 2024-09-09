@@ -1,11 +1,12 @@
 import "./assets/index.css";
 
 import { createApp } from "vue";
-import { createPinia } from "pinia";
-import posthogPlugin from "../plugins/posthog";
 import App from "./App.vue";
-
 const app = createApp(App);
+
+import posthogPlugin from "../plugins/posthog";
+
+import { createPinia } from "pinia";
 const pinia = createPinia();
 app.use(pinia);
 

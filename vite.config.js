@@ -2,7 +2,6 @@ import { fileURLToPath, URL } from 'node:url';
 import path from 'node:path'
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import server from './server/index';
 
 import tailwind from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
@@ -24,20 +23,23 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     }
   },
+  root: "src",
   build: {
-    outDir: './dist',
+      copyPublicDir: true,
+      outDir: '../dist',
+      emptyOutDir: true,
   },
   server: {
     port: port,
     proxy: {
       '/api': {
-        target: `${server.host}:${server.port}`,
+        target: `http://localhost:3001`,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       },
       '/socket.io': {
-        target: `${server.host}:${server.port}`,
-        ws: true, // Enable WebSocket proxying
+        target: `http://localhost:3001`,
+        ws: true,
       }
     },
   }
