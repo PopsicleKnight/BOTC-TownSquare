@@ -4,14 +4,14 @@
 export const rooms = new Map();
 export const clientSockets = new Map();
 
-export function socketHandlers(io) {
-  io.on("connection", (socket) => {
-    console.log(`A user connected: ${socket.id}`);
+export function socketHandlers(fastify) {
+  fastify.io.on("connection", (socket) => {
+    fastify.log.info(`A user connected: ${socket.id}`);
 
     socket.on(
       "joinRoom",
       ({ room, clientId }) => {
-        console.log(`Socket ${socket.id} joining room: ${room}`);
+        fastify.log.info(`Socket ${socket.id} joining room: ${room}`);
 
         if (!rooms.has(room)) {
           rooms.set(room, {
@@ -40,18 +40,18 @@ export function socketHandlers(io) {
           if (!roomData.host) {
             roomData.host = { clientId: clientId, socketId: socket.id };
             socket.emit("role", { role: "story-teller" });
-            console.log(
+            fastify.log.info(
               `Client ${clientId} assigned as story teller for room ${room}`,
             );
           } else if (roomData.host.clientId === clientId) {
             roomData.host = { clientId: clientId, socketId: socket.id };
             socket.emit("role", { role: "story-teller" });
-            console.log(
+            fastify.log.info(
               `Client ${clientId} rejoining as story teller for room ${room}`,
             );
           } else {
             socket.emit("role", { role: "spectator" });
-            console.log(
+            fastify.log.info(
               `Client ${clientId} assigned as spectator for room ${room}`,
             );
           }
@@ -60,8 +60,8 @@ export function socketHandlers(io) {
             socket.emit("updateGameState", roomData.gameState);
           }
 
-          const clientsInRoom = io.sockets.adapter.rooms.get(room) || new Set();
-          console.log(`Clients in room ${room}:`, Array.from(clientsInRoom));
+          const clientsInRoom = fastify.io.sockets.adapter.rooms.get(room) || new Set();
+          fastify.log.info(`Clients in room ${room}:`, Array.from(clientsInRoom));
         }
       },
     );
@@ -69,7 +69,7 @@ export function socketHandlers(io) {
     socket.on(
       "takeSeat",
       ({ room, playerName }) => {
-        console.log(`Player took a seat: ${playerName} in room ${room}`);
+        fastify.log.info(`Player took a seat: ${playerName} in room ${room}`);
 
         if (rooms.has(room)) {
           const roomData = rooms.get(room);
@@ -95,13 +95,13 @@ export function socketHandlers(io) {
           }
 
           if (roomData?.players.has(socket.id)) {
-            console.log(
+            fastify.log.info(
               `Socket ${socket.id} is already assigned to ${roomData.players.get(socket.id)?.name}.`,
             );
             return;
           }
 
-          io.to(room).emit("tookSeat", playerName);
+          fastify.io.to(room).emit("tookSeat", playerName);
 
           roomData?.players.set(socket.id, {
             name: playerName,
@@ -109,9 +109,9 @@ export function socketHandlers(io) {
             role: "",
           });
 
-          console.log(`Current players in room ${room}:`);
+          fastify.log.info(`Current players in room ${room}:`);
           for (const [id, player] of roomData?.players || []) {
-            console.log(`Player ID: ${id}, Name: ${player.name}`);
+            fastify.log.info(`Player ID: ${id}, Name: ${player.name}`);
           }
         } else {
           console.error(`Room ${room} does not exist`);
@@ -132,7 +132,7 @@ export function socketHandlers(io) {
         return;
       }
 
-      console.log(`Passing out roles for room: ${room}`);
+      fastify.log.info(`Passing out roles for room: ${room}`);
 
       if (rooms.has(room)) {
         const roomData = rooms.get(room);
@@ -160,7 +160,7 @@ export function socketHandlers(io) {
           }
 
           // Log all players before attempting to assign roles
-          console.log(
+          fastify.log.info(
             "Current players in room before assigning roles:",
             JSON.stringify(Array.from(roomData.players.values()), null, 2),
           );
@@ -172,13 +172,13 @@ export function socketHandlers(io) {
 
           if (player) {
             player.role = privatePlayer.assignedCharacter;
-            console.log(
+            fastify.log.info(
               `Assigned role ${privatePlayer.assignedCharacter} to player ${player.name}`,
             );
 
             const playerSocketId = player.socketId;
             if (playerSocketId) {
-              io.to(playerSocketId).emit("assignedRole", {
+              fastify.io.to(playerSocketId).emit("assignedRole", {
                 name: player.name,
                 role: privatePlayer.assignedCharacter,
               });
@@ -197,29 +197,29 @@ export function socketHandlers(io) {
     });
 
     socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.id}`);
+      fastify.log.info(`User disconnected: ${socket.id}`);
 
       const clientData = Array.from(clientSockets.values()).find(
         (client) => client.socketId === socket.id,
       );
       if (clientData) {
-        console.log(`User part of room: ${clientData.room}`);
+        fastify.log.info(`User part of room: ${clientData.room}`);
         const roomData = rooms.get(clientData.room);
         if (roomData) {
           if (roomData.players.has(socket.id)) {
             const player = roomData.players.get(socket.id);
-            console.log(`Player is: ${player?.name}`);
+            fastify.log.info(`Player is: ${player?.name}`);
 
             roomData.players.delete(socket.id);
-            io.to(clientData.room).emit("stoodUpFromSeat", player?.name);
+            fastify.io.to(clientData.room).emit("stoodUpFromSeat", player?.name);
           }
         }
 
         clientSockets.delete(clientData.clientId);
       }
 
-      io.sockets.adapter.rooms.forEach((room, roomName) => {
-        console.log(
+      fastify.io.sockets.adapter.rooms.forEach((room, roomName) => {
+        fastify.log.info(
           `Clients in room ${roomName} after disconnect:`,
           Array.from(room),
         );
@@ -235,7 +235,7 @@ export function socketHandlers(io) {
         gameStartedOn,
         players,
       }) => {
-        console.log(`The game has started on ${gameStartedOn}`);
+        fastify.log.info(`The game has started on ${gameStartedOn}`);
 
         const roomData = rooms.get(room);
         if (roomData) {
@@ -270,8 +270,8 @@ export function socketHandlers(io) {
           return;
         }
 
-        console.log(`The game state has changed`);
-        console.log(
+        fastify.log.info(`The game state has changed`);
+        fastify.log.info(
           "updateGameState",
           JSON.stringify(
             {
