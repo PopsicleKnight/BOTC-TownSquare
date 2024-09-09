@@ -28,7 +28,7 @@ class SocketManager {
     this.gameStore.setGameId(gameId);
 
     const port = import.meta.env.VITE_SERVER_BACKEND_PORT || 3000;
-    const host = import.meta.env.VITE_SERVER_HOST || '0.0.0.0';
+    const host = import.meta.env.VITE_BACKEND_URL;
     this.socket = io(`${host}:${port}`, {
       query: { clientId: this.clientId },
     });

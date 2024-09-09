@@ -1,10 +1,10 @@
-import { fileURLToPath, URL } from 'node:url';
-import path from 'node:path'
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import { fileURLToPath, URL } from "node:url";
+import path from "node:path";
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
-import tailwind from 'tailwindcss'
-import autoprefixer from 'autoprefixer'
+import tailwind from "tailwindcss";
+import autoprefixer from "autoprefixer";
 
 const port = 3000;
 
@@ -14,33 +14,31 @@ export default defineConfig({
       plugins: [tailwind(), autoprefixer()],
     },
   },
-  plugins: [
-    vue(),
-  ],
+  plugins: [vue()],
   resolve: {
     alias: {
-      '~': fileURLToPath(new URL('./src', import.meta.url)),
-      '@': path.resolve(__dirname, './src'),
-    }
+      "~": fileURLToPath(new URL("./src", import.meta.url)),
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
   root: "src",
   build: {
-      copyPublicDir: true,
-      outDir: '../dist',
-      emptyOutDir: true,
+    copyPublicDir: true,
+    outDir: "../dist",
+    emptyOutDir: true,
   },
   server: {
     port: port,
     proxy: {
-      '/api': {
-        target: `http://localhost:3001`,
+      "/api": {
+        target: `${import.meta.env.VITE_BACKEND_URL}`,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/api/, ""),
       },
-      '/socket.io': {
-        target: `http://localhost:3001`,
+      "/socket.io": {
+        target: `${import.meta.env.VITE_BACKEND_URL}`,
         ws: true,
-      }
+      },
     },
-  }
+  },
 });
