@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import path from 'node:path'
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import server from './src/server/index';
+import server from './server/index';
 
 import tailwind from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
