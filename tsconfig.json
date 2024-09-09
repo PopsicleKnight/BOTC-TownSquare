@@ -12,6 +12,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "tailwind.config.js", "@/lib"],
+  "include": ["src/**/*", "tailwind.config.js", "@/lib", "server"],
   "exclude": ["node_modules"]
 }
