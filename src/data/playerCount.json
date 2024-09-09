@@ -1,0 +1,13 @@
+[
+  { "count": 5, "townsfolk": 3, "outsider": 0, "minion": 1, "demon": 1 },
+  { "count": 6, "townsfolk": 3, "outsider": 1, "minion": 1, "demon": 1 },
+  { "count": 7, "townsfolk": 5, "outsider": 0, "minion": 1, "demon": 1 },
+  { "count": 8, "townsfolk": 5, "outsider": 1, "minion": 1, "demon": 1 },
+  { "count": 9, "townsfolk": 5, "outsider": 2, "minion": 1, "demon": 1 },
+  { "count": 10, "townsfolk": 7, "outsider": 0, "minion": 2, "demon": 1 },
+  { "count": 11, "townsfolk": 7, "outsider": 1, "minion": 2, "demon": 1 },
+  { "count": 12, "townsfolk": 7, "outsider": 2, "minion": 2, "demon": 1 },
+  { "count": 13, "townsfolk": 9, "outsider": 0, "minion": 3, "demon": 1 },
+  { "count": 14, "townsfolk": 9, "outsider": 1, "minion": 3, "demon": 1 },
+  { "count": 15, "townsfolk": 9, "outsider": 2, "minion": 3, "demon": 1 }
+]
