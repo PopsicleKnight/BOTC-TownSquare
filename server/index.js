@@ -18,13 +18,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distPath = path.resolve(__dirname, '../dist'); // Correctly join the path to 'dist'
 
-const port = process.env.VITE_SERVER_BACKEND_PORT || 3001;
-const host = process.env.VITE_SERVER_HOST || 'http://localhost';
-const frontendPort = process.env.VITE_SERVER_FRONTEND_PORT || 3000;
+const port = process.env.VITE_SERVER_BACKEND_PORT || 3000;
+const host = process.env.VITE_SERVER_HOST || '0.0.0.0';
 
 // Register CORS
 fastify.register(fastifyCors, {
-  origin: [`${host}:${frontendPort}`, `${host}:${port}`], // Allow frontend and backend ports
+  origin: [`${host}:${port}`], // Allow frontend and backend ports
   methods: ['GET', 'POST'],
   credentials: true // Allow credentials if needed
 });
@@ -32,7 +31,7 @@ fastify.register(fastifyCors, {
 // Register Socket.IO with CORS
 fastify.register(fastifyIO, {
   cors: {
-    origin: [`${host}:${frontendPort}`, `${host}:${port}`],
+    origin: [`${host}:${port}`],
     methods: ['GET', 'POST'],
     credentials: true // Allow credentials if needed
   }
@@ -62,7 +61,7 @@ fastify.ready().then(() => {
 setupApiRoutes(fastify);
 
 // Start Fastify server
-fastify.listen({ port: port }, (err, address) => {
+fastify.listen({ port: port, host: host }, (err, address) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
